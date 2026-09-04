@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+
+<div class="dashboard-grid">
+  <div class="stat-card"><div class="stat-value">{{ stats.total }}</div>My Snippets</div>
+  <div class="stat-card"><div class="stat-value">{{ stats.public }}</div>Public</div>
+  <div class="stat-card"><div class="stat-value">{{ stats.private }}</div>Private</div>
+  <div class="stat-card"><div class="stat-value">{{ favorites_count }}</div>Favorites</div>
+</div>
+
+<h2>My Snippets</h2>
+{% for snippet in my_snippets %}
+  <div class="snippet-card">
+    <h3><a href="{{ snippet.get_absolute_url }}">{{ snippet.title }}</a></h3>
+    <div class="snippet-meta">{{ snippet.language.name }} · {{ snippet.get_visibility_display }}</div>
+  </div>
+{% empty %}
+  <p style="color:var(--mist);">You haven't created any snippets yet. <a href="{% url 'snippets:create' %}">Create one</a>.</p>
+{% endfor %}
+
+<h2>Favorites</h2>
+{% for snippet in my_favorites %}
+  <div class="snippet-card">
+    <h3><a href="{{ snippet.get_absolute_url }}">{{ snippet.title }}</a></h3>
+    <div class="snippet-meta">by {{ snippet.owner.username }} · {{ snippet.language.name }}</div>
+  </div>
+{% empty %}
+  <p style="color:var(--mist);">No favorites yet.</p>
+{% endfor %}
+
+<h2>Public Snippets (recent)</h2>
+{% for snippet in public_snippets %}
+  <div class="snippet-card">
+    <h3><a href="{{ snippet.get_absolute_url }}">{{ snippet.title }}</a></h3>
+    <div class="snippet-meta">by {{ snippet.owner.username }} · {{ snippet.language.name }}</div>
+  </div>
+{% empty %}
+  <p style="color:var(--mist);">No public snippets yet.</p>
+{% endfor %}
+{% endblock %}

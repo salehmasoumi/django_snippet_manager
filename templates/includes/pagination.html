@@ -1,0 +1,11 @@
+{% if page_obj.paginator.num_pages > 1 %}
+<div class="pagination" style="margin-top:1.5rem;display:flex;gap:0.5rem;">
+  {% if page_obj.has_previous %}
+    <a class="btn" href="?{% if request.GET.urlencode %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.previous_page_number }}">Prev</a>
+  {% endif %}
+  <span style="color:var(--mist);align-self:center;">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+  {% if page_obj.has_next %}
+    <a class="btn" href="?{% if request.GET.urlencode %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a>
+  {% endif %}
+</div>
+{% endif %}

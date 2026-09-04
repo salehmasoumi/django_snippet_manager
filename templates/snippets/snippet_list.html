@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Browse Snippets{% endblock %}
+{% block content %}
+<h1>Browse Snippets</h1>
+
+<form method="get" class="filter-bar">
+  {{ form.q }}
+  {{ form.language }}
+  {{ form.tag }}
+  {{ form.visibility }}
+  <button type="submit" class="btn">Filter</button>
+</form>
+
+{% for snippet in snippets %}
+  <div class="snippet-card">
+    <h3><a href="{{ snippet.get_absolute_url }}">{{ snippet.title }}</a></h3>
+    <div class="snippet-meta">
+      by {{ snippet.owner.username }} · {{ snippet.language.name }}
+      {% if snippet.visibility == 'private' %} · <span class="visibility-private">Private</span>{% endif %}
+      · {{ snippet.created_at|date:"Y-m-d" }}
+    </div>
+    {% if snippet.description %}<p>{{ snippet.description|truncatewords:25 }}</p>{% endif %}
+    {% for tag in snippet.tags.all %}<span class="tag-badge">{{ tag.name }}</span>{% endfor %}
+  </div>
+{% empty %}
+  <p style="color:var(--mist);">No snippets found.</p>
+{% endfor %}
+
+{% include 'includes/pagination.html' with page_obj=page_obj %}
+{% endblock %}

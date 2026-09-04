@@ -1,0 +1,20 @@
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a href="{% url 'dashboard:home' %}" class="brand">&lt;/&gt; SnippetHub</a>
+        <div class="nav-links">
+            <a href="{% url 'snippets:list' %}">Browse</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'snippets:create' %}">New Snippet</a>
+                <a href="{% url 'dashboard:home' %}">Dashboard</a>
+                <a href="{% url 'accounts:my_profile' %}">{{ user.username }}</a>
+                <form action="{% url 'accounts:logout' %}" method="post" class="inline-form">
+                    {% csrf_token %}
+                    <button type="submit" class="link-button">Logout</button>
+                </form>
+            {% else %}
+                <a href="{% url 'accounts:login' %}">Login</a>
+                <a href="{% url 'accounts:register' %}">Register</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>

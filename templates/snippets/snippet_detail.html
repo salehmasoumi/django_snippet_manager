@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load snippet_tags %}
+{% block title %}{{ snippet.title }}{% endblock %}
+{% block extra_head %}
+<style>.highlight, pre { background: var(--carbon); border-radius: var(--r-md); padding: 1rem; overflow-x: auto; }</style>
+{% endblock %}
+{% block content %}
+<h1>{{ snippet.title }}
+  {% if snippet.visibility == 'private' %}<span class="visibility-private">(Private)</span>{% endif %}
+</h1>
+<div class="snippet-meta">
+  by <a href="{% url 'accounts:profile' username=snippet.owner.username %}">{{ snippet.owner.username }}</a>
+  · {{ snippet.language.name }} · updated {{ snippet.updated_at|date:"Y-m-d H:i" }}
+</div>
+
+{% if snippet.description %}<p>{{ snippet.description }}</p>{% endif %}
+
+{% for tag in snippet.tags.all %}<span class="tag-badge">{{ tag.name }}</span>{% endfor %}
+
+<div class="code-block-wrap" style="margin-top:1rem;">
+  <button class="btn copy-btn" data-copy-target="snippet-code">Copy</button>
+  <pre class="language-{{ snippet.language.pygments_lexer }}"><code id="snippet-code">{{ snippet.code|highlight_code }}</code></pre>
+</div>
+
+<div style="margin-top:1rem;display:flex;gap:0.5rem;">
+  {% if user.is_authenticated %}
+    <form method="post" action="{% url 'favorites:toggle' slug=snippet.slug %}">
+      {% csrf_token %}
+      <button type="submit" class="btn">
+        {% if is_favorited %}★ Favorited{% else %}☆ Favorite{% endif %}
+      </button>
+    </form>
+  {% endif %}
+  {% if is_owner %}
+    <a href="{% url 'snippets:edit' slug=snippet.slug %}" class="btn">Edit</a>
+    <form method="post" action="{% url 'snippets:delete' slug=snippet.slug %}" onsubmit="return confirm('Delete this snippet?');">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+  {% endif %}
+</div>
+
+{% if snippet.visibility == 'public' %}
+<p style="margin-top:1rem;color:var(--mist);font-size:0.85rem;">
+  Shareable link: <code>{{ request.build_absolute_uri }}</code>
+</p>
+{% endif %}
+{% endblock %}
